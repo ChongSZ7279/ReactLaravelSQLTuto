@@ -67,28 +67,34 @@ function EmployeeList() {
 
   return (
     <div>
-      <h2>Employees</h2>
-
-      {error ? (
-        <div style={{ marginBottom: 12, color: "crimson" }}>{error}</div>
-      ) : null}
+      {error ? <div className="error-banner">{error}</div> : null}
 
       {loading ? (
-        <div>Loading...</div>
+        <div className="loading">Loading employees…</div>
+      ) : employees.length === 0 ? (
+        <div className="empty-state">
+          No employees yet. Click “Add Employee” to create your first one.
+        </div>
       ) : (
-        <ul style={{ paddingLeft: 18 }}>
+        <ul className="employee-list">
           {employees.map((emp) => (
-            <li key={emp.id} style={{ marginBottom: 8 }}>
-              <strong>{emp.name}</strong> — {emp.position}{" "}
-              <Link to={`/edit/${emp.id}`} style={{ marginLeft: 8 }}>
-                Edit
-              </Link>
-              <button
-                onClick={() => handleDelete(emp.id)}
-                style={{ marginLeft: 8 }}
-              >
-                Delete
-              </button>
+            <li key={emp.id} className="employee-item">
+              <div className="employee-info">
+                <span className="employee-name">{emp.name}</span>
+                <span className="employee-position">{emp.position}</span>
+              </div>
+              <div className="employee-actions">
+                <Link to={`/edit/${emp.id}`} className="btn-ghost">
+                  Edit
+                </Link>
+                <button
+                  type="button"
+                  className="btn-danger"
+                  onClick={() => handleDelete(emp.id)}
+                >
+                  Delete
+                </button>
+              </div>
             </li>
           ))}
         </ul>

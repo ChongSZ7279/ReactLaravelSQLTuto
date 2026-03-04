@@ -43,54 +43,75 @@ function AddEmployee() {
   };
 
   return (
-    <div>
+    <div className="form-card">
       <h2>Add Employee</h2>
 
-      {error ? (
-        <div style={{ marginBottom: 12, color: "crimson" }}>{error}</div>
-      ) : null}
+      {error ? <div className="error-banner">{error}</div> : null}
 
-      <form onSubmit={handleSubmit} style={{ display: "grid", gap: 10, maxWidth: 420 }}>
-        <input
-          placeholder="Name"
-          value={form.name}
-          onChange={handleChange("name")}
-          required
-        />
-        <input
-          placeholder="Email"
-          type="email"
-          value={form.email}
-          onChange={handleChange("email")}
-          required
-        />
-        <input
-          placeholder="Phone"
-          value={form.phone}
-          onChange={handleChange("phone")}
-          required
-        />
-        <input
-          placeholder="Position"
-          value={form.position}
-          onChange={handleChange("position")}
-          required
-        />
-        <input
-          placeholder="Salary"
-          type="number"
-          step="0.01"
-          value={form.salary}
-          onChange={handleChange("salary")}
-          required
-        />
-        <input
-          placeholder="Hire date"
-          type="date"
-          value={form.hire_date}
-          onChange={handleChange("hire_date")}
-          required
-        />
+      <form onSubmit={handleSubmit} className="form-grid">
+        <div className="field">
+          <label>Name</label>
+          <input
+            placeholder="Name"
+            value={form.name}
+            onChange={handleChange("name")}
+            required
+          />
+        </div>
+
+        <div className="field">
+          <label>Email</label>
+          <input
+            placeholder="Email"
+            type="email"
+            value={form.email}
+            onChange={handleChange("email")}
+            required
+          />
+        </div>
+
+        <div className="field">
+          <label>Phone</label>
+          <input
+            placeholder="Phone"
+            value={form.phone}
+            onChange={handleChange("phone")}
+            required
+          />
+        </div>
+
+        <div className="field">
+          <label>Position</label>
+          <input
+            placeholder="Position"
+            value={form.position}
+            onChange={handleChange("position")}
+            required
+          />
+        </div>
+
+        <div className="field">
+          <label>Salary</label>
+          <input
+            placeholder="Salary"
+            type="number"
+            step="0.01"
+            value={form.salary}
+            onChange={handleChange("salary")}
+            required
+          />
+        </div>
+
+        <div className="field">
+          <label>Hire date</label>
+          <input
+            placeholder="Hire date"
+            type="date"
+            value={form.hire_date}
+            onChange={handleChange("hire_date")}
+            required
+          />
+        </div>
 
         <button type="submit" disabled={submitting}>
           {submitting ? "Saving..." : "Save"}

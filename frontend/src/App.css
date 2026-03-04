@@ -325,6 +325,20 @@ a.btn-ghost:hover {
   position: relative;
 }
 
+.top-bar nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.top-bar .btn-ghost,
+.top-bar .btn-primary,
+.top-bar button.btn-ghost {
+  padding: 6px 14px;
+  font-size: 0.8rem;
+}
+
 .top-bar::after {
   content: '';
   position: absolute;
@@ -343,6 +357,14 @@ a.btn-ghost:hover {
 
 .top-bar h2::after { display: none; }
 
+.nav-user {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-left: 8px;
+  margin-right: 2px;
+}
+
 /* ── Empty state ── */
 .empty-state {
   text-align: center;
@@ -359,4 +381,14 @@ a.btn-ghost:hover {
   h2 { font-size: 1.6rem; }
   .employee-item { flex-direction: column; align-items: flex-start; gap: 12px; }
   .employee-actions { width: 100%; justify-content: flex-end; }
+
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .top-bar nav {
+    justify-content: flex-start;
+  }
 }

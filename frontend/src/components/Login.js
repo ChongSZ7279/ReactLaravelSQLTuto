@@ -42,31 +42,33 @@ function Login() {
   };
 
   return (
-    <div>
+    <div className="form-card">
       <h2>Login</h2>
 
-      {error ? (
-        <div style={{ marginBottom: 12, color: "crimson" }}>{error}</div>
-      ) : null}
+      {error ? <div className="error-banner">{error}</div> : null}
 
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "grid", gap: 10, maxWidth: 320 }}
-      >
-        <input
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange("email")}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange("password")}
-          required
-        />
+      <form onSubmit={handleSubmit} className="form-grid">
+        <div className="field">
+          <label>Email</label>
+          <input
+            type="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange("email")}
+            required
+          />
+        </div>
+
+        <div className="field">
+          <label>Password</label>
+          <input
+            type="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange("password")}
+            required
+          />
+        </div>
 
         <button type="submit" disabled={submitting}>
           {submitting ? "Logging in..." : "Login"}
