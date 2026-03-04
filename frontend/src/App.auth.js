@@ -12,6 +12,7 @@ import AddEmployee from "./components/AddEmployee";
 import EditEmployee from "./components/EditEmployee";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import Logout from "./components/Logout";
 
 function RequireAuth({ children }) {
   const token = window.localStorage.getItem("auth_token");
@@ -22,6 +23,8 @@ function RequireAuth({ children }) {
 }
 
 function App() {
+  const token = window.localStorage.getItem("auth_token");
+
   return (
     <Router>
       <div style={{ padding: "20px" }}>
@@ -29,7 +32,13 @@ function App() {
 
         <nav>
           <Link to="/">Home</Link> | <Link to="/add">Add Employee</Link> |{" "}
-          <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
+          {token ? (
+            <Link to="/logout">Logout</Link>
+          ) : (
+            <>
+              <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
+            </>
+          )}
         </nav>
 
         <hr />
@@ -61,6 +70,7 @@ function App() {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/logout" element={<Logout />} />
         </Routes>
       </div>
     </Router>

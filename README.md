@@ -118,10 +118,18 @@ New App (protected routes example):
   - Routes:
     - `/login` → `Login`
     - `/register` → `Register`
+    - `/logout` → `Logout`
     - `/` → protected `EmployeeList`
     - `/add` → protected `AddEmployee`
     - `/edit/:id` → protected `EditEmployee`
-  - Navigation links: Home, Add Employee, Login, Register.
+  - Navigation links:
+    - When **not authenticated** (no `auth_token`): Home, Add Employee, Login, Register.
+    - When **authenticated** (has `auth_token`): Home, Add Employee, Logout.
+
+- `src/components/Logout.js`
+  - Calls `POST /logout` using the stored token.
+  - Clears `auth_token` and `auth_user` from `localStorage`.
+  - Redirects you back to the Login page.
 
 ### How to switch the frontend to the auth-enabled version
 
@@ -153,6 +161,7 @@ To use the **auth-enabled** versions:
    - Visit `http://localhost:3000/register` and create a new user.
    - You should be redirected to `/` and see the employees list.
    - Next time, use `http://localhost:3000/login` to log in with the same credentials.
+   - After logging in, you can log out via the **Logout** link in the top navigation (this will also invalidate the token on the backend).
 
 ---
 
