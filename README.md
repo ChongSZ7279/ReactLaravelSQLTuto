@@ -25,6 +25,7 @@ cd backend
 composer install
 php artisan key:generate
 php artisan migrate
+php artisan migrate --path=database/migrations/2026_03_04_000001_add_api_token_to_users_table.php
 php artisan serve --host=127.0.0.1 --port=8000
 ```
 
@@ -42,6 +43,116 @@ npm start
 ```
 
 Open the UI at `http://localhost:3000`.
+
+---
+
+## Login & Register (Authentication)
+
+This project now has a very simple **token-based** authentication layer:
+
+- **Register**: `POST http://127.0.0.1:8000/api/register`
+- **Login**: `POST http://127.0.0.1:8000/api/login`
+- **Current user**: `GET http://127.0.0.1:8000/api/me` (requires token)
+- **Logout**: `POST http://127.0.0.1:8000/api/logout` (requires token)
+
+The Laravel backend stores an `api_token` on the `users` table.  
+The React frontend stores that token in `localStorage` as `auth_token` and sends it in an `Authorization: Bearer <token>` header.
+
+### How it works (backend)
+
+- New migration: `database/migrations/2026_03_04_000001_add_api_token_to_users_table.php`
+  - Adds `api_token` (string, unique, nullable) to the `users` table.
+- Model: `app/Models/User.php`
+  - `api_token` is added to `$fillable`.
+- Middleware: `app/Http/Middleware/AuthToken.php`
+  - Reads `Authorization: Bearer <token>` or `X-API-TOKEN` header.
+  - Finds the user by `api_token` and attaches it to the request.
+  - If invalid/missing, returns **401 JSON**.
+- Registered middleware alias in `bootstrap/app.php`:
+  - `'auth.token' => \App\Http\Middleware\AuthToken::class`
+- Controller: `app/Http/Controllers/AuthController.php`
+  - `register(name, email, password)` → creates user, generates `api_token`, returns `{ user, token }`.
+  - `login(email, password)` → validates credentials, generates new `api_token`, returns `{ user, token }`.
+  - `me()` → returns the currently authenticated user.
+  - `logout()` → nulls out `api_token` and returns a small JSON message.
+- Routes: `routes/api.php`
+  - Public:
+    - `POST /register` → `AuthController@register`
+    - `POST /login` → `AuthController@login`
+  - Protected by `auth.token`:
+    - `GET /me`
+    - `POST /logout`
+    - `Route::apiResource('employees', EmployeeController::class);`
+
+### How it works (frontend)
+
+New components:
+
+- `src/components/Login.js`
+  - Simple form with `email` and `password`.
+  - Calls `POST /login`.
+  - On success:
+    - Saves `token` to `localStorage` as `auth_token`.
+    - Saves `user` to `localStorage` as `auth_user`.
+    - Redirects to `/`.
+- `src/components/Register.js`
+  - Simple form with `name`, `email`, `password`.
+  - Calls `POST /register`.
+  - On success:
+    - Same behaviour as login (stores token + user, redirects to `/`).
+
+New helper files (for authenticated setup):
+
+- `src/services/api.auth.js`
+  - Same base URL as `src/services/api.js`.
+  - Adds a request interceptor that reads `auth_token` from `localStorage` and sets:
+    - `Authorization: Bearer <token>`
+
+New App (protected routes example):
+
+- `src/App.auth.js`
+  - Uses a small `<RequireAuth>` wrapper:
+    - Checks `localStorage.getItem("auth_token")`.
+    - If missing, redirects to `/login`.
+    - If present, renders the requested page.
+  - Routes:
+    - `/login` → `Login`
+    - `/register` → `Register`
+    - `/` → protected `EmployeeList`
+    - `/add` → protected `AddEmployee`
+    - `/edit/:id` → protected `EditEmployee`
+  - Navigation links: Home, Add Employee, Login, Register.
+
+### How to switch the frontend to the auth-enabled version
+
+By default, `src/App.js` and `src/services/api.js` were created first and may be used by your current React setup.
+
+To use the **auth-enabled** versions:
+
+1. In `src/index.js` (or wherever your React app is bootstrapped), change the import to:
+
+   ```js
+   import App from "./App.auth";
+   ```
+
+2. In your components that call the API, you can either:
+   - Keep using `../services/api` and manually add the `Authorization` header, **or**
+   - Change imports to use the interceptor version:
+
+   ```js
+   import API from "../services/api.auth";
+   ```
+
+3. Restart the React dev server if it is running:
+
+   ```bash
+   npm start
+   ```
+
+4. In the browser:
+   - Visit `http://localhost:3000/register` and create a new user.
+   - You should be redirected to `/` and see the employees list.
+   - Next time, use `http://localhost:3000/login` to log in with the same credentials.
 
 ---
 
