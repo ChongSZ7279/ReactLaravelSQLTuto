@@ -44,6 +44,91 @@ npm start
 
 Open the UI at `http://localhost:3000`.
 
+The auth UI (`App.auth.js` and related screens) uses **Material UI (MUI)** for layout, forms, tables, and navigation. See **[Material UI](#material-ui-mui)** below for install steps and how it is wired in.
+
+---
+
+## Material UI (MUI)
+
+This frontend uses [MUI v6](https://mui.com/material-ui/getting-started/) with the default **Emotion** styling engine (recommended for CRA).
+
+### 1) Install packages (plug in MUI)
+
+From the `frontend` folder, install the core library, styling peers, and icons:
+
+```bash
+cd frontend
+npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
+```
+
+These are already listed in `frontend/package.json` for this project; running `npm install` pulls them in.
+
+**Why these packages?**
+
+| Package | Role |
+|--------|------|
+| `@mui/material` | Components (`Button`, `TextField`, `Table`, `AppBar`, …) |
+| `@emotion/react` / `@emotion/styled` | Required peer dependencies for MUI’s default styling |
+| `@mui/icons-material` | Icon set used in the app bar and employee table actions |
+
+### 2) Wrap the app with theme + baseline
+
+In `src/index.js`, the root render is wrapped with:
+
+- **`ThemeProvider`** — supplies the theme from `src/theme.js` to all MUI components.
+- **`CssBaseline`** — normalizes browser defaults (similar to a light reset) for a consistent look.
+
+Example (this project’s setup):
+
+```js
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { ThemeProvider, CssBaseline } from "@mui/material";
+import App from "./App.auth";
+import theme from "./theme";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+root.render(
+  <React.StrictMode>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <App />
+    </ThemeProvider>
+  </React.StrictMode>
+);
+```
+
+### 3) Customize the look (`src/theme.js`)
+
+`src/theme.js` calls `createTheme()` and exports a theme object. Edit **palette**, **typography**, **shape.borderRadius**, or **`components` overrides** there to change colors and component defaults app-wide.
+
+### 4) How this project uses MUI
+
+- **`src/App.auth.js`** — `AppBar` / `Toolbar` navigation; `Button` + React Router via `component={RouterLink}` and `to="..."`.
+- **`Login.js` / `Register.js`** — `Paper`, `TextField`, `Alert`, `Stack`, `Typography`.
+- **`EmployeeList.js`** — `Table`, `Paper`, delete confirmation `Dialog`, icon buttons.
+- **`AddEmployee.js` / `EditEmployee.js`** — form layout with `Paper`, `TextField`, actions.
+- **`Logout.js`** — `CircularProgress` + `Paper` while signing out.
+
+### 5) Using MUI in your own components
+
+```js
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+
+function Example() {
+  return (
+    <Stack spacing={2} sx={{ p: 2 }}>
+      <Button variant="contained">Save</Button>
+    </Stack>
+  );
+}
+```
+
+- Use the **`sx` prop** for one-off layout/spacing (it understands theme tokens like `theme.spacing(2)`).
+- Browse components and APIs in the [MUI documentation](https://mui.com/material-ui/all-components/).
+
 ---
 
 ## Login & Register (Authentication)
@@ -86,17 +171,17 @@ The React frontend stores that token in `localStorage` as `auth_token` and sends
 
 ### How it works (frontend)
 
-New components:
+New components (UI built with **Material UI** — see [Material UI](#material-ui-mui)):
 
 - `src/components/Login.js`
-  - Simple form with `email` and `password`.
+  - MUI form (`TextField`, `Paper`, `Alert`) with `email` and `password`.
   - Calls `POST /login`.
   - On success:
     - Saves `token` to `localStorage` as `auth_token`.
     - Saves `user` to `localStorage` as `auth_user`.
     - Redirects to `/`.
 - `src/components/Register.js`
-  - Simple form with `name`, `email`, `password`.
+  - MUI form with `name`, `email`, `password`.
   - Calls `POST /register`.
   - On success:
     - Same behaviour as login (stores token + user, redirects to `/`).
@@ -111,6 +196,8 @@ New helper files (for authenticated setup):
 New App (protected routes example):
 
 - `src/App.auth.js`
+  - Top **AppBar** navigation (MUI) and main content in a **Container**.
+  - Re-reads `auth_token` on route changes so the nav switches Login/Register vs Logout after login/logout.
   - Uses a small `<RequireAuth>` wrapper:
     - Checks `localStorage.getItem("auth_token")`.
     - If missing, redirects to `/login`.
@@ -137,10 +224,14 @@ By default, `src/App.js` and `src/services/api.js` were created first and may be
 
 To use the **auth-enabled** versions:
 
-1. In `src/index.js` (or wherever your React app is bootstrapped), change the import to:
+1. In `src/index.js` (or wherever your React app is bootstrapped), use the auth app and **Material UI** root setup:
 
    ```js
+   import { ThemeProvider, CssBaseline } from "@mui/material";
    import App from "./App.auth";
+   import theme from "./theme";
+
+   // wrap <App /> with <ThemeProvider theme={theme}><CssBaseline /><App /></ThemeProvider>
    ```
 
 2. In your components that call the API, you can either:
@@ -265,7 +356,7 @@ php artisan serve --host=127.0.0.1 --port=8000
 ```bash
 npx create-react-app frontend
 cd frontend
-npm install axios react-router-dom
+npm install axios react-router-dom @mui/material @emotion/react @emotion/styled @mui/icons-material
 ```
 
 2) Create an Axios client (in `src/services/api.js`):

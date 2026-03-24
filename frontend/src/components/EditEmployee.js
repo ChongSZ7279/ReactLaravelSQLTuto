@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link as RouterLink } from "react-router-dom";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import Link from "@mui/material/Link";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import API from "../services/api.auth";
 
 function EditEmployee() {
@@ -75,65 +84,77 @@ function EditEmployee() {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2, py: 4 }}>
+        <CircularProgress size={32} />
+        <Typography color="text.secondary">Loading employee…</Typography>
+      </Box>
+    );
+  }
 
   return (
-    <div>
-      <h2>Edit Employee</h2>
+    <Box sx={{ maxWidth: 560 }}>
+      <Typography variant="h5" component="h1" gutterBottom>
+        Edit employee
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        <Link component={RouterLink} to="/" underline="hover">
+          ← Back to list
+        </Link>
+      </Typography>
 
-      {error ? (
-        <div style={{ marginBottom: 12, color: "crimson" }}>{error}</div>
-      ) : null}
+      <Paper elevation={1} sx={{ p: { xs: 2, sm: 3 } }}>
+        {error ? (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        ) : null}
 
-      <form onSubmit={handleSubmit} style={{ display: "grid", gap: 10, maxWidth: 420 }}>
-        <input
-          placeholder="Name"
-          value={form.name}
-          onChange={handleChange("name")}
-          required
-        />
-        <input
-          placeholder="Email"
-          type="email"
-          value={form.email}
-          onChange={handleChange("email")}
-          required
-        />
-        <input
-          placeholder="Phone"
-          value={form.phone}
-          onChange={handleChange("phone")}
-          required
-        />
-        <input
-          placeholder="Position"
-          value={form.position}
-          onChange={handleChange("position")}
-          required
-        />
-        <input
-          placeholder="Salary"
-          type="number"
-          step="0.01"
-          value={form.salary}
-          onChange={handleChange("salary")}
-          required
-        />
-        <input
-          placeholder="Hire date"
-          type="date"
-          value={form.hire_date}
-          onChange={handleChange("hire_date")}
-          required
-        />
-
-        <button type="submit" disabled={saving}>
-          {saving ? "Saving..." : "Save changes"}
-        </button>
-      </form>
-    </div>
+        <Box component="form" onSubmit={handleSubmit} noValidate>
+          <Stack spacing={2}>
+            <TextField label="Name" value={form.name} onChange={handleChange("name")} required fullWidth />
+            <TextField
+              label="Email"
+              type="email"
+              value={form.email}
+              onChange={handleChange("email")}
+              required
+              fullWidth
+            />
+            <TextField label="Phone" value={form.phone} onChange={handleChange("phone")} required fullWidth />
+            <TextField label="Position" value={form.position} onChange={handleChange("position")} required fullWidth />
+            <TextField
+              label="Salary"
+              type="number"
+              inputProps={{ step: "0.01", min: 0 }}
+              value={form.salary}
+              onChange={handleChange("salary")}
+              required
+              fullWidth
+            />
+            <TextField
+              label="Hire date"
+              type="date"
+              value={form.hire_date}
+              onChange={handleChange("hire_date")}
+              required
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
+            <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ pt: 1 }}>
+              <Button component={RouterLink} to="/">
+                Cancel
+              </Button>
+              <Button type="submit" variant="contained" disabled={saving}>
+                {saving ? "Saving…" : "Save changes"}
+              </Button>
+            </Stack>
+          </Stack>
+        </Box>
+      </Paper>
+    </Box>
   );
 }
 
 export default EditEmployee;
-

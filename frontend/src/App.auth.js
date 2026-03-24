@@ -3,9 +3,18 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link,
   Navigate,
+  Link as RouterLink,
+  useLocation,
 } from "react-router-dom";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Stack from "@mui/material/Stack";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import GroupsIcon from "@mui/icons-material/Groups";
 
 import EmployeeList from "./components/EmployeeList";
 import AddEmployee from "./components/AddEmployee";
@@ -22,57 +31,85 @@ function RequireAuth({ children }) {
   return children;
 }
 
-function App() {
+function AppShell() {
+  // Re-read auth state when route changes (e.g. after login / logout)
+  useLocation();
   const token = window.localStorage.getItem("auth_token");
 
   return (
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <AppBar position="sticky" elevation={1}>
+        <Toolbar sx={{ gap: 1, flexWrap: "wrap" }}>
+          <GroupsIcon sx={{ mr: 0.5 }} />
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 700 }}>
+            Employee Management
+          </Typography>
+          <Stack direction="row" spacing={0.5} useFlexGap flexWrap="wrap">
+            <Button color="inherit" component={RouterLink} to="/">
+              Home
+            </Button>
+            <Button color="inherit" component={RouterLink} to="/add">
+              Add Employee
+            </Button>
+            {token ? (
+              <Button color="inherit" component={RouterLink} to="/logout">
+                Logout
+              </Button>
+            ) : (
+              <>
+                <Button color="inherit" component={RouterLink} to="/login">
+                  Login
+                </Button>
+                <Button color="inherit" variant="outlined" component={RouterLink} to="/register">
+                  Register
+                </Button>
+              </>
+            )}
+          </Stack>
+        </Toolbar>
+      </AppBar>
+
+      <Box component="main" sx={{ flex: 1, py: 3 }}>
+        <Container maxWidth="lg">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <RequireAuth>
+                  <EmployeeList />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/add"
+              element={
+                <RequireAuth>
+                  <AddEmployee />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/edit/:id"
+              element={
+                <RequireAuth>
+                  <EditEmployee />
+                </RequireAuth>
+              }
+            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/logout" element={<Logout />} />
+          </Routes>
+        </Container>
+      </Box>
+    </Box>
+  );
+}
+
+function App() {
+  return (
     <Router>
-      <div style={{ padding: "20px" }}>
-        <h1>Employee Management System</h1>
-
-        <nav>
-          <Link to="/">Home</Link> | <Link to="/add">Add Employee</Link> |{" "}
-          {token ? (
-            <Link to="/logout">Logout</Link>
-          ) : (
-            <>
-              <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
-            </>
-          )}
-        </nav>
-
-        <hr />
-
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <RequireAuth>
-                <EmployeeList />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/add"
-            element={
-              <RequireAuth>
-                <AddEmployee />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/edit/:id"
-            element={
-              <RequireAuth>
-                <EditEmployee />
-              </RequireAuth>
-            }
-          />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/logout" element={<Logout />} />
-        </Routes>
-      </div>
+      <AppShell />
     </Router>
   );
 }

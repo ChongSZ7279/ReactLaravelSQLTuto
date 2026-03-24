@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import API from "../services/api";
 
 function Login() {
@@ -42,43 +50,56 @@ function Login() {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
+    <Box sx={{ maxWidth: 420, mx: "auto", mt: 2 }}>
+      <Paper elevation={2} sx={{ p: { xs: 3, sm: 4 } }}>
+        <Typography variant="h5" gutterBottom>
+          Sign in
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+          Use your account email and password.
+        </Typography>
 
-      {error ? (
-        <div style={{ marginBottom: 12, color: "crimson" }}>{error}</div>
-      ) : null}
+        {error ? (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        ) : null}
 
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "grid", gap: 10, maxWidth: 320 }}
-      >
-        <input
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange("email")}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange("password")}
-          required
-        />
+        <Box component="form" onSubmit={handleSubmit} noValidate>
+          <Stack spacing={2}>
+            <TextField
+              label="Email"
+              type="email"
+              value={form.email}
+              onChange={handleChange("email")}
+              required
+              fullWidth
+              autoComplete="email"
+            />
+            <TextField
+              label="Password"
+              type="password"
+              value={form.password}
+              onChange={handleChange("password")}
+              required
+              fullWidth
+              autoComplete="current-password"
+            />
+            <Button type="submit" variant="contained" size="large" disabled={submitting}>
+              {submitting ? "Signing in…" : "Sign in"}
+            </Button>
+          </Stack>
+        </Box>
 
-        <button type="submit" disabled={submitting}>
-          {submitting ? "Logging in..." : "Login"}
-        </button>
-      </form>
-
-      <p style={{ marginTop: 12 }}>
-        No account? <Link to="/register">Register</Link>
-      </p>
-    </div>
+        <Typography variant="body2" sx={{ mt: 3 }}>
+          No account?{" "}
+          <Link component={RouterLink} to="/register" underline="hover">
+            Register
+          </Link>
+        </Typography>
+      </Paper>
+    </Box>
   );
 }
 
 export default Login;
-
