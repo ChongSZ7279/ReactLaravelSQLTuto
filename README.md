@@ -48,6 +48,17 @@ Open the UI at `http://localhost:3000`.
 
 The React app uses [Tailwind CSS](https://tailwindcss.com/) v3 for layout, typography, and component styling.
 
+**First-time setup (Windows PowerShell)**
+
+Run this command exactly:
+
+```bash
+npm install -D tailwindcss@3 postcss autoprefixer; 
+npx tailwindcss init -p
+```
+
+This installs Tailwind + PostCSS tooling and creates `tailwind.config.js` and `postcss.config.js`.
+
 - **Config**: `frontend/tailwind.config.js` — the `content` array tells Tailwind which files to scan for class names (see [Content configuration](https://tailwindcss.com/docs/content-configuration)).
 - **PostCSS**: `frontend/postcss.config.js` — wires Tailwind and Autoprefixer into Create React App’s build.
 - **Global styles**: `frontend/src/index.css` — imports Tailwind’s layers (`@tailwind base/components/utilities`) and a few base tweaks for the page background and text.

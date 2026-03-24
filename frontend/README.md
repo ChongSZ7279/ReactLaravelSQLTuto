@@ -6,6 +6,17 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 This frontend uses **Tailwind CSS v3** with PostCSS (compatible with Create React App 5, no eject required).
 
+### First-time setup (Windows PowerShell)
+
+Run this command exactly:
+
+```bash
+npm install -D tailwindcss@3 postcss autoprefixer; 
+npx tailwindcss init -p
+```
+
+This installs Tailwind dependencies and generates `tailwind.config.js` and `postcss.config.js`.
+
 ### Project files
 
 | File | Purpose |
