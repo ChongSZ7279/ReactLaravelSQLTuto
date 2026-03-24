@@ -52,7 +52,7 @@ The React app uses **[Bootstrap 5](https://getbootstrap.com/docs/5.3/getting-sta
 
 ```bash
 cd frontend
-npm install
+npm install bootstrap
 ```
 
 Bootstrap is listed in `frontend/package.json` as the `bootstrap` package. It is loaded globally in `frontend/src/index.js`:
