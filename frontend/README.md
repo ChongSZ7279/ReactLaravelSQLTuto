@@ -1,6 +1,15 @@
-# Getting Started with Create React App
+﻿# Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+
+## Bootstrap 5
+
+The UI uses Bootstrap 5 from the `bootstrap` npm package.
+
+- **Install:** run `npm install` in this folder (see root project `README.md` for full stack setup).
+- **Entry point:** `src/index.js` imports Bootstrap's CSS and JS bundle so components can use classes like `btn`, `card`, `navbar`, and `data-bs-*` attributes for the mobile menu.
+- **Customization:** edit `src/index.css` after the Bootstrap import; see [Bootstrap docs](https://getbootstrap.com/docs/5.3/) for class names and examples.
 
 ## Available Scripts
 
@@ -68,3 +77,4 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+

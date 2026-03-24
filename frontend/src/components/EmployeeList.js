@@ -67,31 +67,71 @@ function EmployeeList() {
 
   return (
     <div>
-      <h2>Employees</h2>
+      <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
+        <h1 className="h3 mb-0">Employees</h1>
+        <Link to="/add" className="btn btn-primary">
+          Add employee
+        </Link>
+      </div>
 
       {error ? (
-        <div style={{ marginBottom: 12, color: "crimson" }}>{error}</div>
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
       ) : null}
 
       {loading ? (
-        <div>Loading...</div>
+        <div className="d-flex align-items-center gap-2 text-secondary py-5 justify-content-center">
+          <div className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
+          <span>Loading employees…</span>
+        </div>
+      ) : employees.length === 0 ? (
+        <div className="card shadow-sm">
+          <div className="card-body text-center py-5">
+            <p className="text-secondary mb-3">No employees yet.</p>
+            <Link to="/add" className="btn btn-primary">
+              Add your first employee
+            </Link>
+          </div>
+        </div>
       ) : (
-        <ul style={{ paddingLeft: 18 }}>
-          {employees.map((emp) => (
-            <li key={emp.id} style={{ marginBottom: 8 }}>
-              <strong>{emp.name}</strong> — {emp.position}{" "}
-              <Link to={`/edit/${emp.id}`} style={{ marginLeft: 8 }}>
-                Edit
-              </Link>
-              <button
-                onClick={() => handleDelete(emp.id)}
-                style={{ marginLeft: 8 }}
-              >
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
+        <div className="card shadow-sm">
+          <div className="table-responsive">
+            <table className="table table-hover align-middle mb-0">
+              <thead className="table-light">
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Position</th>
+                  <th scope="col" className="text-end">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {employees.map((emp) => (
+                  <tr key={emp.id}>
+                    <td className="fw-medium">{emp.name}</td>
+                    <td className="text-secondary small">{emp.email}</td>
+                    <td>{emp.position}</td>
+                    <td className="text-end text-nowrap">
+                      <Link to={`/edit/${emp.id}`} className="btn btn-sm btn-outline-primary me-2">
+                        Edit
+                      </Link>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => handleDelete(emp.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
     </div>
   );

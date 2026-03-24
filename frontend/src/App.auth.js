@@ -4,6 +4,7 @@ import {
   Routes,
   Route,
   Link,
+  NavLink,
   Navigate,
 } from "react-router-dom";
 
@@ -22,27 +23,71 @@ function RequireAuth({ children }) {
   return children;
 }
 
+function navLinkClass({ isActive }) {
+  return `nav-link ${isActive ? "active" : ""}`;
+}
+
 function App() {
   const token = window.localStorage.getItem("auth_token");
 
   return (
     <Router>
-      <div style={{ padding: "20px" }}>
-        <h1>Employee Management System</h1>
+      <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div className="container">
+          <Link className="navbar-brand fw-semibold" to="/">
+            Employee Manager
+          </Link>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNav"
+            aria-controls="mainNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon" />
+          </button>
+          <div className="collapse navbar-collapse" id="mainNav">
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+              <li className="nav-item">
+                <NavLink className={navLinkClass} end to="/">
+                  Home
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink className={navLinkClass} to="/add">
+                  Add Employee
+                </NavLink>
+              </li>
+            </ul>
+            <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+              {token ? (
+                <li className="nav-item">
+                  <NavLink className={navLinkClass} to="/logout">
+                    Logout
+                  </NavLink>
+                </li>
+              ) : (
+                <>
+                  <li className="nav-item">
+                    <NavLink className={navLinkClass} to="/login">
+                      Login
+                    </NavLink>
+                  </li>
+                  <li className="nav-item">
+                    <NavLink className={navLinkClass} to="/register">
+                      Register
+                    </NavLink>
+                  </li>
+                </>
+              )}
+            </ul>
+          </div>
+        </div>
+      </nav>
 
-        <nav>
-          <Link to="/">Home</Link> | <Link to="/add">Add Employee</Link> |{" "}
-          {token ? (
-            <Link to="/logout">Logout</Link>
-          ) : (
-            <>
-              <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
-            </>
-          )}
-        </nav>
-
-        <hr />
-
+      <main className="container py-4">
         <Routes>
           <Route
             path="/"
@@ -72,10 +117,9 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/logout" element={<Logout />} />
         </Routes>
-      </div>
+      </main>
     </Router>
   );
 }
 
 export default App;
-

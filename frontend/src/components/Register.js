@@ -42,49 +42,93 @@ function Register() {
   };
 
   return (
-    <div>
-      <h2>Register</h2>
+    <div className="row justify-content-center">
+      <div className="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4">
+        <div className="text-center mb-4">
+          <h1 className="h3 mb-1">Create account</h1>
+          <p className="text-secondary small mb-0">Register to access the employee dashboard.</p>
+        </div>
 
-      {error ? (
-        <div style={{ marginBottom: 12, color: "crimson" }}>{error}</div>
-      ) : null}
+        <div className="card shadow-sm">
+          <div className="card-body p-4">
+            {error ? (
+              <div className="alert alert-danger" role="alert">
+                {error}
+              </div>
+            ) : null}
 
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "grid", gap: 10, maxWidth: 320 }}
-      >
-        <input
-          placeholder="Name"
-          value={form.name}
-          onChange={handleChange("name")}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange("email")}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange("password")}
-          required
-        />
+            <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <label htmlFor="reg-name" className="form-label">
+                  Name
+                </label>
+                <input
+                  id="reg-name"
+                  className="form-control"
+                  autoComplete="name"
+                  placeholder="Your name"
+                  value={form.name}
+                  onChange={handleChange("name")}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="reg-email" className="form-label">
+                  Email
+                </label>
+                <input
+                  id="reg-email"
+                  className="form-control"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  value={form.email}
+                  onChange={handleChange("email")}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="reg-password" className="form-label">
+                  Password
+                </label>
+                <input
+                  id="reg-password"
+                  className="form-control"
+                  type="password"
+                  autoComplete="new-password"
+                  placeholder="Choose a password"
+                  value={form.password}
+                  onChange={handleChange("password")}
+                  required
+                />
+              </div>
+              <button type="submit" className="btn btn-primary w-100" disabled={submitting}>
+                {submitting ? (
+                  <>
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                    Creating account…
+                  </>
+                ) : (
+                  "Register"
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
 
-        <button type="submit" disabled={submitting}>
-          {submitting ? "Creating account..." : "Register"}
-        </button>
-      </form>
-
-      <p style={{ marginTop: 12 }}>
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
+        <p className="text-center text-secondary small mt-3 mb-0">
+          Already have an account?{" "}
+          <Link to="/login" className="fw-medium">
+            Sign in
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
 
 export default Register;
-

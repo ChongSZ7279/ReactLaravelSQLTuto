@@ -42,43 +42,79 @@ function Login() {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
+    <div className="row justify-content-center">
+      <div className="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4">
+        <div className="text-center mb-4">
+          <h1 className="h3 mb-1">Sign in</h1>
+          <p className="text-secondary small mb-0">Use your account to manage employees.</p>
+        </div>
 
-      {error ? (
-        <div style={{ marginBottom: 12, color: "crimson" }}>{error}</div>
-      ) : null}
+        <div className="card shadow-sm">
+          <div className="card-body p-4">
+            {error ? (
+              <div className="alert alert-danger" role="alert">
+                {error}
+              </div>
+            ) : null}
 
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "grid", gap: 10, maxWidth: 320 }}
-      >
-        <input
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange("email")}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange("password")}
-          required
-        />
+            <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <label htmlFor="login-email" className="form-label">
+                  Email
+                </label>
+                <input
+                  id="login-email"
+                  className="form-control"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  value={form.email}
+                  onChange={handleChange("email")}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="login-password" className="form-label">
+                  Password
+                </label>
+                <input
+                  id="login-password"
+                  className="form-control"
+                  type="password"
+                  autoComplete="current-password"
+                  placeholder="••••••••"
+                  value={form.password}
+                  onChange={handleChange("password")}
+                  required
+                />
+              </div>
+              <button type="submit" className="btn btn-primary w-100" disabled={submitting}>
+                {submitting ? (
+                  <>
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                    Signing in…
+                  </>
+                ) : (
+                  "Login"
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
 
-        <button type="submit" disabled={submitting}>
-          {submitting ? "Logging in..." : "Login"}
-        </button>
-      </form>
-
-      <p style={{ marginTop: 12 }}>
-        No account? <Link to="/register">Register</Link>
-      </p>
+        <p className="text-center text-secondary small mt-3 mb-0">
+          No account?{" "}
+          <Link to="/register" className="fw-medium">
+            Create one
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
 
 export default Login;
-

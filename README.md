@@ -44,6 +44,33 @@ npm start
 
 Open the UI at `http://localhost:3000`.
 
+### Bootstrap 5 (UI)
+
+The React app uses **[Bootstrap 5](https://getbootstrap.com/docs/5.3/getting-started/introduction/)** for layout, forms, tables, alerts, and the responsive navbar.
+
+**Install (if `node_modules` is missing or after pulling changes):**
+
+```bash
+cd frontend
+npm install
+```
+
+Bootstrap is listed in `frontend/package.json` as the `bootstrap` package. It is loaded globally in `frontend/src/index.js`:
+
+- **Styles:** `import "bootstrap/dist/css/bootstrap.min.css";`
+- **JavaScript (optional but used here):** `import "bootstrap/dist/js/bootstrap.bundle.min.js";`  
+  This enables the collapsible navbar on small screens (`data-bs-toggle="collapse"`).
+
+**How to use Bootstrap in this project:**
+
+1. Add Bootstrap **utility and component classes** to your JSX, for example:
+   - Layout: `container`, `row`, `col-*`, `d-flex`, `gap-2`, `mb-3`
+   - Components: `btn`, `btn-primary`, `card`, `form-control`, `table`, `alert`, `navbar`, `spinner-border`
+2. Follow the official docs for class names and examples: [Bootstrap 5.3 documentation](https://getbootstrap.com/docs/5.3/).
+3. Small app-specific tweaks live in `frontend/src/index.css` (loaded after Bootstrap so your rules can override when needed).
+
+**Alternative:** You can add [Bootstrap Icons](https://icons.getbootstrap.com/) or [react-bootstrap](https://react-bootstrap.github.io/) later if you want icon fonts or pre-built React components; the current setup uses plain Bootstrap classes only.
+
 ---
 
 ## Login & Register (Authentication)
@@ -265,7 +292,7 @@ php artisan serve --host=127.0.0.1 --port=8000
 ```bash
 npx create-react-app frontend
 cd frontend
-npm install axios react-router-dom
+npm install axios react-router-dom bootstrap
 ```
 
 2) Create an Axios client (in `src/services/api.js`):
