@@ -44,6 +44,36 @@ npm start
 
 Open the UI at `http://localhost:3000`.
 
+### Styling with Tailwind CSS
+
+The React app uses [Tailwind CSS](https://tailwindcss.com/) v3 for layout, typography, and component styling.
+
+- **Config**: `frontend/tailwind.config.js` — the `content` array tells Tailwind which files to scan for class names (see [Content configuration](https://tailwindcss.com/docs/content-configuration)).
+- **PostCSS**: `frontend/postcss.config.js` — wires Tailwind and Autoprefixer into Create React App’s build.
+- **Global styles**: `frontend/src/index.css` — imports Tailwind’s layers (`@tailwind base/components/utilities`) and a few base tweaks for the page background and text.
+- **Entry**: `frontend/src/index.js` imports `./index.css` so styles apply app-wide.
+
+**How to use Tailwind in components**
+
+Add utility classes to `className` on any element, for example:
+
+```jsx
+<button className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-500">
+  Save
+</button>
+```
+
+Browse the [Tailwind documentation](https://tailwindcss.com/docs) for spacing, colors, flex/grid, responsive prefixes (`sm:`, `md:`), and state variants (`hover:`, `focus:`).
+
+**After cloning or changing dependencies**
+
+```bash
+cd frontend
+npm install
+```
+
+Tailwind is listed under `devDependencies` in `frontend/package.json`. No extra CLI step is required for day-to-day work; `npm start` and `npm run build` process CSS automatically.
+
 ---
 
 ## Login & Register (Authentication)

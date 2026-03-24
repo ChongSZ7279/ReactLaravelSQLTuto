@@ -2,6 +2,45 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Tailwind CSS
+
+This frontend uses **Tailwind CSS v3** with PostCSS (compatible with Create React App 5, no eject required).
+
+### Project files
+
+| File | Purpose |
+|------|---------|
+| `tailwind.config.js` | Tailwind settings; **`content`** must include `./src/**/*.{js,jsx,ts,tsx}` so unused classes are purged in production. |
+| `postcss.config.js` | Registers `tailwindcss` and `autoprefixer` for the CRA webpack pipeline. |
+| `src/index.css` | Contains `@tailwind base;`, `@tailwind components;`, `@tailwind utilities;` and optional `@layer base` overrides. |
+| `src/index.js` | Imports `./index.css` so Tailwind runs for the whole app. |
+
+### Using Tailwind in JSX
+
+Put utility classes on `className`. Combine them with template literals or a helper when needed:
+
+```jsx
+<div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+  <h2 className="text-lg font-semibold text-slate-900">Title</h2>
+</div>
+```
+
+- **Responsive**: prefix utilities with `sm:`, `md:`, etc. (e.g. `sm:grid-cols-2`).
+- **States**: `hover:`, `focus:`, `disabled:`, etc.
+- **Customization**: edit `theme.extend` in `tailwind.config.js` for design tokens, or add `@layer components { ... }` in `index.css` for repeated patterns.
+
+Official reference: [https://tailwindcss.com/docs](https://tailwindcss.com/docs)
+
+### Install / upgrade
+
+From this folder:
+
+```bash
+npm install
+```
+
+Tailwind-related packages are under `devDependencies` in `package.json`.
+
 ## Available Scripts
 
 In the project directory, you can run:

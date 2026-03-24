@@ -1,6 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import API from "../services/api.auth";
+
+const inputClass =
+  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20";
+
+const labelClass = "mb-1 block text-sm font-medium text-slate-700";
 
 function AddEmployee() {
   const navigate = useNavigate();
@@ -44,58 +49,131 @@ function AddEmployee() {
 
   return (
     <div>
-      <h2>Add Employee</h2>
+      <div className="mb-6">
+        <Link
+          to="/"
+          className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+        >
+          ← Back to list
+        </Link>
+        <h2 className="mt-2 text-lg font-semibold text-slate-900">
+          Add employee
+        </h2>
+        <p className="text-sm text-slate-500">
+          Fill in the details below. All fields are required.
+        </p>
+      </div>
 
-      {error ? (
-        <div style={{ marginBottom: 12, color: "crimson" }}>{error}</div>
-      ) : null}
+      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        {error ? (
+          <div
+            className="mb-6 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"
+            role="alert"
+          >
+            {error}
+          </div>
+        ) : null}
 
-      <form onSubmit={handleSubmit} style={{ display: "grid", gap: 10, maxWidth: 420 }}>
-        <input
-          placeholder="Name"
-          value={form.name}
-          onChange={handleChange("name")}
-          required
-        />
-        <input
-          placeholder="Email"
-          type="email"
-          value={form.email}
-          onChange={handleChange("email")}
-          required
-        />
-        <input
-          placeholder="Phone"
-          value={form.phone}
-          onChange={handleChange("phone")}
-          required
-        />
-        <input
-          placeholder="Position"
-          value={form.position}
-          onChange={handleChange("position")}
-          required
-        />
-        <input
-          placeholder="Salary"
-          type="number"
-          step="0.01"
-          value={form.salary}
-          onChange={handleChange("salary")}
-          required
-        />
-        <input
-          placeholder="Hire date"
-          type="date"
-          value={form.hire_date}
-          onChange={handleChange("hire_date")}
-          required
-        />
+        <form onSubmit={handleSubmit} className="grid gap-5 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <label htmlFor="add-name" className={labelClass}>
+              Name
+            </label>
+            <input
+              id="add-name"
+              className={inputClass}
+              placeholder="Full name"
+              value={form.name}
+              onChange={handleChange("name")}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="add-email" className={labelClass}>
+              Email
+            </label>
+            <input
+              id="add-email"
+              type="email"
+              className={inputClass}
+              placeholder="name@company.com"
+              value={form.email}
+              onChange={handleChange("email")}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="add-phone" className={labelClass}>
+              Phone
+            </label>
+            <input
+              id="add-phone"
+              className={inputClass}
+              placeholder="+1 555 000 0000"
+              value={form.phone}
+              onChange={handleChange("phone")}
+              required
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <label htmlFor="add-position" className={labelClass}>
+              Position
+            </label>
+            <input
+              id="add-position"
+              className={inputClass}
+              placeholder="Job title"
+              value={form.position}
+              onChange={handleChange("position")}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="add-salary" className={labelClass}>
+              Salary
+            </label>
+            <input
+              id="add-salary"
+              type="number"
+              step="0.01"
+              className={inputClass}
+              placeholder="0.00"
+              value={form.salary}
+              onChange={handleChange("salary")}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="add-hire" className={labelClass}>
+              Hire date
+            </label>
+            <input
+              id="add-hire"
+              type="date"
+              className={inputClass}
+              value={form.hire_date}
+              onChange={handleChange("hire_date")}
+              required
+            />
+          </div>
 
-        <button type="submit" disabled={submitting}>
-          {submitting ? "Saving..." : "Save"}
-        </button>
-      </form>
+          <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:justify-end">
+            <Link
+              to="/"
+              className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-center text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+            >
+              Cancel
+            </Link>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {submitting ? "Saving…" : "Save employee"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
