@@ -161,9 +161,10 @@ To use the **auth-enabled** versions:
 Base URL: `http://127.0.0.1:8000/api`
 
 - `GET    /employees` (list)
-- `POST   /employees` (create)
+- `POST   /employees` (create — JSON or `multipart/form-data` with optional `profile_picture` file)
 - `GET    /employees/{id}` (read)
-- `PUT    /employees/{id}` (update)
+- `PUT    /employees/{id}` (update — JSON or fields without a new file)
+- `POST   /employees/{id}` (update with `multipart/form-data` when uploading a new `profile_picture`; same controller as PUT)
 - `DELETE /employees/{id}` (delete)
 
 ### Example JSON body (create/update)
@@ -178,6 +179,27 @@ Base URL: `http://127.0.0.1:8000/api`
   "hire_date": "2026-03-04"
 }
 ```
+
+### Profile pictures (backend)
+
+Employees can store an optional image. The API saves files on the `public` disk under `storage/app/public/employee_profiles/` and exposes a computed `profile_picture_url` on each employee in JSON responses.
+
+1. Run migrations (includes `profile_picture` on `employees`):
+
+   ```bash
+   cd backend
+   php artisan migrate
+   ```
+
+2. Expose storage over HTTP (one-time per machine):
+
+   ```bash
+   php artisan storage:link
+   ```
+
+3. In `.env`, set **`APP_URL`** to the same origin clients use for the API (for example `http://127.0.0.1:8000`) so `profile_picture_url` points at a working file URL.
+
+**Multipart fields** (create or update): `name`, `email`, `phone`, `position`, `salary`, `hire_date`, and optional file field **`profile_picture`** (JPEG, PNG, WebP, or GIF, max 2 MB). The React app sends `multipart/form-data` for create, and uses **`POST /api/employees/{id}`** for edit when a new file is chosen, because PHP file uploads on `PUT` are unreliable.
 
 ---
 

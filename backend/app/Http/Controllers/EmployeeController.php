@@ -4,10 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class EmployeeController extends Controller
 {
+    private const PROFILE_RULES = [
+        'nullable',
+        'image',
+        'max:2048',
+        'mimes:jpeg,jpg,png,webp,gif',
+    ];
+
     public function index()
     {
         return response()->json(Employee::query()->orderByDesc('id')->get());
@@ -22,7 +31,15 @@ class EmployeeController extends Controller
             'position' => ['required', 'string', 'max:255'],
             'salary' => ['required', 'numeric'],
             'hire_date' => ['required', 'date'],
+            'profile_picture' => self::PROFILE_RULES,
         ]);
+
+        $upload = $validated['profile_picture'] ?? null;
+        if ($upload instanceof UploadedFile) {
+            $validated['profile_picture'] = $upload->store('employee_profiles', 'public');
+        } else {
+            $validated['profile_picture'] = null;
+        }
 
         $employee = Employee::create($validated);
 
@@ -50,16 +67,32 @@ class EmployeeController extends Controller
             'position' => ['required', 'string', 'max:255'],
             'salary' => ['required', 'numeric'],
             'hire_date' => ['required', 'date'],
+            'profile_picture' => self::PROFILE_RULES,
         ]);
+
+        $upload = $validated['profile_picture'] ?? null;
+        if ($upload instanceof UploadedFile) {
+            if ($employee->profile_picture) {
+                Storage::disk('public')->delete($employee->profile_picture);
+            }
+            $validated['profile_picture'] = $upload->store('employee_profiles', 'public');
+        } else {
+            unset($validated['profile_picture']);
+        }
 
         $employee->update($validated);
 
-        return response()->json($employee);
+        return response()->json($employee->fresh());
     }
 
     public function destroy($id)
     {
         $employee = Employee::findOrFail($id);
+
+        if ($employee->profile_picture) {
+            Storage::disk('public')->delete($employee->profile_picture);
+        }
+
         $employee->delete();
 
         return response()->json(['message' => 'Deleted']);

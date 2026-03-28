@@ -1,6 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import API from "../services/api.auth";
+import { resolveProfilePictureSrc } from "../utils/profilePictureUrl";
+
+function EmployeeAvatar({ name, url }) {
+  const initial = (name && name.trim()[0]) || "?";
+  const [broken, setBroken] = useState(false);
+
+  useEffect(() => {
+    setBroken(false);
+  }, [url]);
+
+  if (url && !broken) {
+    return (
+      <img
+        className="employee-avatar-img"
+        src={url}
+        alt=""
+        loading="lazy"
+        onError={() => setBroken(true)}
+      />
+    );
+  }
+
+  return (
+    <span className="employee-avatar-fallback is-visible" aria-hidden>
+      {initial.toUpperCase()}
+    </span>
+  );
+}
 
 function EmployeeList() {
   const [employees, setEmployees] = useState([]);
@@ -77,11 +105,20 @@ function EmployeeList() {
         </div>
       ) : (
         <ul className="employee-list">
-          {employees.map((emp) => (
+          {employees.map((emp) => {
+            const photoSrc = resolveProfilePictureSrc(emp, { cacheBust: true });
+            return (
             <li key={emp.id} className="employee-item">
-              <div className="employee-info">
-                <span className="employee-name">{emp.name}</span>
-                <span className="employee-position">{emp.position}</span>
+              <div className="employee-main">
+                <div className="employee-avatar">
+                  <span className="employee-avatar-inner" aria-hidden>
+                    <EmployeeAvatar name={emp.name} url={photoSrc} />
+                  </span>
+                </div>
+                <div className="employee-info">
+                  <span className="employee-name">{emp.name}</span>
+                  <span className="employee-position">{emp.position}</span>
+                </div>
               </div>
               <div className="employee-actions">
                 <Link to={`/edit/${emp.id}`} className="btn-ghost">
@@ -96,7 +133,8 @@ function EmployeeList() {
                 </button>
               </div>
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
     </div>

@@ -11,6 +11,9 @@ Route::middleware('auth.token')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
+    // Multipart file uploads from browsers often use POST (PUT + files is unreliable in PHP).
+    Route::post('employees/{employee}', [EmployeeController::class, 'update']);
+
     Route::apiResource('employees', EmployeeController::class);
 });
 

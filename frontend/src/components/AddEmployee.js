@@ -2,6 +2,20 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api.auth";
 
+function buildEmployeeFormData(form, profileFile) {
+  const formData = new FormData();
+  formData.append("name", form.name);
+  formData.append("email", form.email);
+  formData.append("phone", form.phone);
+  formData.append("position", form.position);
+  formData.append("salary", String(form.salary));
+  formData.append("hire_date", form.hire_date);
+  if (profileFile) {
+    formData.append("profile_picture", profileFile);
+  }
+  return formData;
+}
+
 function AddEmployee() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -12,11 +26,22 @@ function AddEmployee() {
     salary: "",
     hire_date: "",
   });
+  const [profileFile, setProfileFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (key) => (e) => {
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0] ?? null;
+    setProfileFile(file);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    setPreviewUrl(file ? URL.createObjectURL(file) : null);
   };
 
   const handleSubmit = async (e) => {
@@ -25,17 +50,20 @@ function AddEmployee() {
     setSubmitting(true);
 
     try {
-      await API.post("/employees", {
-        ...form,
-        salary: form.salary === "" ? "" : Number(form.salary),
-      });
+      const formData = buildEmployeeFormData(form, profileFile);
+      await API.post("/employees", formData);
       navigate("/");
     } catch (err) {
-      const message =
-        err?.response?.data?.message ||
-        (typeof err?.response?.data === "string" ? err.response.data : "") ||
+      const data = err?.response?.data;
+      let message =
+        data?.message ||
+        (typeof data === "string" ? data : "") ||
         err?.message ||
         "Failed to add employee";
+      if (data?.errors && typeof data.errors === "object") {
+        const first = Object.values(data.errors).flat()[0];
+        if (first) message = first;
+      }
       setError(message);
     } finally {
       setSubmitting(false);
@@ -49,6 +77,22 @@ function AddEmployee() {
       {error ? <div className="error-banner">{error}</div> : null}
 
       <form onSubmit={handleSubmit} className="form-grid">
+        <div className="field field-full">
+          <label htmlFor="add-profile-picture">Profile picture (optional)</label>
+          <input
+            id="add-profile-picture"
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            onChange={handleFileChange}
+          />
+          <p className="field-hint">JPEG, PNG, WebP, or GIF — max 2 MB</p>
+          {previewUrl ? (
+            <div className="profile-preview">
+              <img src={previewUrl} alt="" />
+            </div>
+          ) : null}
+        </div>
+
         <div className="field">
           <label>Name</label>
           <input
